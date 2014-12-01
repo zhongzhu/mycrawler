@@ -49,11 +49,10 @@ exports.getCompanyCategoryList = function (myUrl, callback) {
 /**
  * 获取某一个公司分类下的所有公司
  *
- * @param {String} category 
  * @param {String} categoryUrl
  * @param {Function} callback
  */
-exports.getCompanyList = function(category, categoryUrl, callback) {
+exports.getCompanyList = function(categoryUrl, callback) {
 	request({
 	    encoding: null,
 	    url: categoryUrl
@@ -65,15 +64,23 @@ exports.getCompanyList = function(category, categoryUrl, callback) {
 		var bodyConverted = iconv.decode(body, 'gb2312').toString();
 		var $ = cheerio.load(bodyConverted);
 
-		var CategoryList = [];
+		// get total page#
+		var nextUrl = $('.seasonnav ul li a').last().attr('href');
+		var pageNumber = nextUrl.match(/page=(\d+)/)[1];
+		console.log(nextUrl + ' ' + pageNumber);
+
+		var companyList = [];
 		$('.feature span a').each(function() {
 			var $me = $(this);
-			CategoryList.push({
+			companyList.push({
 				company_name: $me.text().trim(),
 				url: $me.attr('href')
 			});
 		});
 
-		callback(null, CategoryList);	
+		// check if we have next page
+
+
+		callback(null, companyList);	
 	});
 }
