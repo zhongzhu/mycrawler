@@ -44,8 +44,11 @@ async.waterfall([
 		});	        
     }
 ],
-// optional callback
+// the final function
 function(err, result){
-    // results is now equal to ['one', 'two']
-    console.log(result);
+    if (err) {
+    	console.error('Final error: ' + err);
+    } else {
+    	console.log(result);
+    }
 });
