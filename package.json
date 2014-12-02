@@ -21,6 +21,7 @@
     "cheerio": "^0.18.0",
     "debug": "^2.1.0",
     "iconv-lite": "^0.4.5",
-    "request": "^2.49.0"
+    "request": "^2.49.0",
+    "underscore": "^1.7.0"
   }
 }

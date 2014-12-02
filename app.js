@@ -1,18 +1,37 @@
+var async = require('async');
+var fs = require('fs');
 var read = require('./read.js');
 
-
-var baseUrl = 'http://www.bioon.com.cn/corporation/';
 var mainUrl = 'http://www.bioon.com.cn/corporation/index.asp'
 
-var myCompanyCategoryList;
-var myCompanyList;
+// var myCompanyCategoryList;
+// var myCompanyList;
 
-// read.getCompanyCategoryList(mainUrl, function(err, list) {
-// 	myCompanyCategoryList = list;
-// 	console.log(myCompanyCategoryList);
-// });
+async.waterfall([
+	// get the companyCategoryList:
+	function (callback) {
+		read.getCompanyCategoryList(mainUrl, function(err, companyCategoryList) {
+			// companyCategoryList = companyCategoryList.slice(0, 1);
+			callback(err, companyCategoryList);
+		});
+	},
 
-read.getCompanyList('http://www.bioon.com.cn/corporation/list.asp?sortid=1&typeid=1', function(err, list) {
-	myCompanyList = list;
-	console.log(myCompanyList);
-});
+	// get the companyList
+	function(companyCategoryList, callback) {
+		read.getCompanyList(companyCategoryList, function(err, companyList) {
+			callback(err, companyList)
+		});
+	}],
+
+	// optional callback
+	function(err, companyList) {
+		fs.writeFile("./companyList.js", JSON.stringify(companyList), function(err) {
+		  if (err) {
+		        console.log(err);
+		  } else {
+		    console.log(companyList.length + " companies saved to companyList.js.");
+		  }
+		}); 	    
+	}
+
+);
