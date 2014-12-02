@@ -29,7 +29,7 @@ async.waterfall([
 		if (err) {
 			console.log('finally: ' + err);
 		} else {
-			fs.writeFile("./companyList.js", JSON.stringify(companyList), function(err) {
+			fs.writeFile("./companyList.json", JSON.stringify(companyList), function(err) {
 				if (err) {
 					console.log(err);
 				} else {
