@@ -10,8 +10,8 @@ var mainUrl = 'http://www.bioon.com.cn/corporation/index.asp'
 async.waterfall([
 	// get the companyCategoryList:
 	function (callback) {
+		console.time('grab company URLs');
 		read.getCompanyCategoryList(mainUrl, function(err, companyCategoryList) {
-			// companyCategoryList = companyCategoryList.slice(0, 1);
 			callback(err, companyCategoryList);
 		});
 	},
@@ -25,13 +25,18 @@ async.waterfall([
 
 	// optional callback
 	function(err, companyList) {
-		fs.writeFile("./companyList.js", JSON.stringify(companyList), function(err) {
-		  if (err) {
-		        console.log(err);
-		  } else {
-		    console.log(companyList.length + " companies saved to companyList.js.");
-		  }
-		}); 	    
+		console.timeEnd('grab company URLs');
+		if (err) {
+			console.log('finally: ' + err);
+		} else {
+			fs.writeFile("./companyList.js", JSON.stringify(companyList), function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log(companyList.length + " companies saved to companyList.js.");
+				}
+			}); 	
+		}    
 	}
 
 );

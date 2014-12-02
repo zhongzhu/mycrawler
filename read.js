@@ -59,6 +59,7 @@ var getCompanyListForOneCategory = function(companyCategory, callback) {
 		// get total page#
 		var $ = cheerio.load(body);		
 		var nextUrl = $('.seasonnav ul li a').last().attr('href');
+		if (!nextUrl) return callback("can't find a page number for: " + companyCategory.url);
 		var pageNumber = nextUrl.match(/page=(\d+)/)[1];
 
 		// page URL for each page
@@ -80,7 +81,7 @@ var getCompanyListForOneCategory = function(companyCategory, callback) {
 *
 */
 var getCompanyListFromOnePage = function(companyCategoryURL, callback) {
-	console.log('* Checking: ' + companyCategoryURL);
+	// console.log('* Checking: ' + companyCategoryURL);
 
 	request({
 	    encoding: null,
@@ -116,7 +117,11 @@ exports.getCompanyList = function(companyCategoryList, callback) {
     // { company: '海门市优耐特实验器材发展有限公司',
     //   url: 'http://www.bioon.com.cn/show/index.asp?id=177029' },		
 	async.mapLimit(companyCategoryList, 5, getCompanyListForOneCategory, function(err, companyList) {
-	    callback(null, _.flatten(companyList));
+		if (err) {
+			return callback(err);
+		} else {
+	    	callback(null, _.flatten(companyList));
+	    }
 	});	
 }
 
